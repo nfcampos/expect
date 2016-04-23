@@ -27,7 +27,11 @@ export const createSpy = (fn, restore = noop) => {
 
   let targetFn, thrownValue, returnValue
 
-  const spy = function spy() {
+  const spy = new Function('spy', `return function(${ // eslint-disable-line no-new-func
+    Array(...Array(fn.length)).map((_, i) => Array(i + 2).join('_')).join(',')
+  }) {
+    return spy.apply(this, arguments)
+  }`)(function () {
     spy.calls.push({
       context: this,
       arguments: Array.prototype.slice.call(arguments, 0)
@@ -40,7 +44,7 @@ export const createSpy = (fn, restore = noop) => {
       throw thrownValue
 
     return returnValue
-  }
+  })
 
   spy.calls = []
 
