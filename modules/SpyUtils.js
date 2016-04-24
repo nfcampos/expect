@@ -51,7 +51,7 @@ export const createSpy = (fn, restore = noop) => {
       { value: fn.length, writable: false, enumerable: false, configurable: true })
   } else {
     spy = new Function('spy', `return function(${ // eslint-disable-line no-new-func
-      Array(...Array(fn.length)).map((_, i) => Array(i + 2).join('_')).join(',')
+      [ ...Array(fn.length) ].map((_, i) => `_${i}`).join(',')
     }) {
       return spy.apply(this, arguments)
     }`)(spyLogic)
